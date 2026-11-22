@@ -6,73 +6,115 @@
 <meta name="description" content="CV of Ahmad Touqeer, AI Engineer in Paris — agentic AI, generative AI, RAG and LLM applications.">
 
 <style>
-  /* A4 print sheet. Open in a browser and use Print → Save as PDF.
-     Keep "Background graphics" ON so the rules under headings render. */
-  @page { size: A4; margin: 11mm 13mm; }
+  /* Social Fame branding (Smm/ads/socialfame): Geist + Geist Mono, near-black
+     #14120b, off-white #edecec, one orange accent #f54e00, hairlines, 4px corners.
+     A4 print sheet. Open in a browser and Print → Save as PDF with
+     "Background graphics" ON so the dark header renders. */
+  @font-face { font-family: Geist; src: url(assets/geist-latin.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: Geist; src: url(assets/geist-latin-ext.woff2) format('woff2'); font-weight: 100 900; unicode-range: U+0100-02BA; }
+  @font-face { font-family: 'Geist Mono'; src: url(assets/geist-mono.woff2) format('woff2'); font-weight: 100 900; }
+
+  @page { size: A4; margin: 10mm 12mm; }
+
+  :root {
+    --night: #14120b;   /* brand ground */
+    --paper: #ffffff;
+    --ink: #26251e;     /* text on paper */
+    --ink-dim: #5f5e58;
+    --ink-faint: #6f6e68;
+    --line: #e1e0db;
+    --orange: #f54e00;  /* brand accent: rules, marks, text on dark */
+    --orange-text: #d24300; /* accent darkened for small text on white */
+    --on-night: #edecec;
+    --on-night-dim: #a19f9b;
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-  html { background: #e9e9ec; }
+  html { background: #ebeae5; }
   body {
-    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
-    color: #15171a;
-    font-size: 9.7pt;
-    line-height: 1.34;
+    font-family: Geist, system-ui, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--ink);
+    font-size: 8.9pt;
+    line-height: 1.38;
+    -webkit-font-smoothing: antialiased;
   }
 
   .sheet {
-    width: 210mm; min-height: 297mm; margin: 0 auto; padding: 11mm 13mm;
-    background: #fff;
+    width: 210mm; min-height: 297mm; margin: 0 auto; padding: 10mm 12mm;
+    background: var(--paper);
   }
 
-  a { color: inherit; }
-  .link { color: #1a4fbf; text-decoration: none; border-bottom: .4pt solid #9fb6e6; }
+  a { color: inherit; text-decoration: none; }
+  .link { color: var(--orange-text); border-bottom: .4pt solid #f5b999; }
+  b, strong { font-weight: 600; color: #14120b; }
 
-  /* ---- Header ---- */
-  header { text-align: center; padding-bottom: 3mm; }
-  h1 { font-size: 21pt; font-weight: 700; letter-spacing: .01em; }
-  h1 .sur { font-weight: 400; }
-  .role { font-size: 12pt; font-style: italic; color: #3c4148; margin-top: 1mm; }
+  /* ---- Header: the dark product-window block from the ads ---- */
+  header {
+    background: var(--night); color: var(--on-night);
+    border-radius: 4px; padding: 6.5mm 7mm 5.5mm;
+  }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6mm; }
+  h1 { font-size: 24pt; font-weight: 500; letter-spacing: -.045em; line-height: 1; }
+  h1 .sur { color: var(--orange); font-weight: 500; }
+  .role {
+    margin-top: 2.2mm; font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 8.4pt; letter-spacing: .1em; text-transform: uppercase; color: var(--on-night-dim);
+  }
+  .role::before { content: ''; display: inline-block; width: 2mm; height: 2mm; border-radius: 50%; background: var(--orange); margin-right: 2mm; vertical-align: .1mm; }
 
   .contact {
-    margin-top: 3mm; font-size: 8.9pt; color: #2a2e33;
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 1.4mm 5mm;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .9mm;
+    font-family: 'Geist Mono', ui-monospace, monospace; font-size: 7.9pt; color: var(--on-night-dim);
+    white-space: nowrap; text-align: right;
   }
-  .contact span { white-space: nowrap; }
-  .contact .sep { color: #a8adb4; }
+  .contact a { color: var(--on-night); }
+  .links {
+    margin-top: 4.5mm; padding-top: 3.2mm; border-top: .6pt solid #2b2923;
+    display: flex; flex-wrap: wrap; gap: 1.5mm 7mm;
+    font-family: 'Geist Mono', ui-monospace, monospace; font-size: 7.9pt; color: var(--on-night-dim);
+  }
+  .links .k { color: var(--orange); text-transform: uppercase; letter-spacing: .1em; margin-right: 1.5mm; }
+  .links a { color: var(--on-night); border-bottom: .4pt solid #6f6c64; }
 
-  /* ---- Section headings ---- */
+  /* ---- Section labels: the mono uppercase .lbl from the ads ---- */
   h2 {
-    font-size: 10.8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
-    margin-top: 3.6mm; padding-bottom: .8mm; border-bottom: 1.1pt solid #15171a;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 8pt; font-weight: 500; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--orange-text);
+    margin-top: 5mm; padding-bottom: 1.2mm; border-bottom: .6pt solid var(--line);
+    break-after: avoid; page-break-after: avoid;
   }
 
-  /* ---- Summary ---- */
-  .summary { margin-top: 2mm; text-align: justify; }
+  .summary { margin-top: 2.2mm; color: var(--ink); }
 
   /* ---- Entries ---- */
-  .entry { margin-top: 2.8mm; page-break-inside: avoid; break-inside: avoid; }
-  .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
-  .entry-title { font-weight: 700; }
-  .entry-sub { display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
-  .entry-org { font-style: italic; color: #3c4148; }
-  .entry-meta { font-size: 8.9pt; color: #4a4f56; white-space: nowrap; text-align: right; }
-  .entry ul { margin: 1.2mm 0 0 4.6mm; }
-  .entry li { margin-top: .8mm; padding-left: .6mm; }
-  .entry .note { margin-top: 1.2mm; }
-  b, strong { font-weight: 700; }
+  .entry { margin-top: 3mm; page-break-inside: avoid; break-inside: avoid; }
+  .entry-head, .entry-sub { display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
+  .entry-title { font-weight: 600; font-size: 9.6pt; letter-spacing: -.01em; color: #14120b; }
+  .entry-org { color: var(--ink-dim); font-weight: 500; }
+  .entry-meta {
+    font-family: 'Geist Mono', ui-monospace, monospace; font-size: 7.6pt;
+    color: var(--ink-faint); white-space: nowrap; text-align: right;
+  }
+  .entry ul { margin: 1.3mm 0 0 0; list-style: none; }
+  .entry li { margin-top: .9mm; padding-left: 3.6mm; position: relative; }
+  .entry li::before { content: ''; position: absolute; left: .4mm; top: 1.75mm; width: 1.3mm; height: 1.3mm; background: var(--orange); border-radius: 50%; }
+  .entry .note { margin-top: 1.2mm; color: var(--ink-dim); }
 
   /* ---- Skills ---- */
-  .skills { margin-top: 2.5mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 8mm; }
-  .skills h3 {
-    font-size: 9.6pt; font-weight: 700; margin-bottom: 1.2mm;
-    padding-bottom: .8mm; border-bottom: .6pt solid #c9ccd1;
-  }
-  .skills ul { margin-left: 4.4mm; }
-  .skills li { margin-top: .8mm; }
+  .skills { margin-top: 2.6mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3.2mm 8mm; }
+  .skills h3 { font-size: 9pt; font-weight: 600; color: #14120b; margin-bottom: 1.2mm; letter-spacing: -.01em; }
+  .skills > div { break-inside: avoid; page-break-inside: avoid; }
+  .skills ul { list-style: none; }
+  .skills li { margin-top: .9mm; padding-left: 3.6mm; position: relative; }
+  .skills li::before { content: ''; position: absolute; left: .4mm; top: 1.75mm; width: 1.3mm; height: 1.3mm; background: var(--orange); border-radius: 50%; }
 
-  /* ---- Footer rows ---- */
-  .inline-list { margin-top: 2.5mm; }
+  .inline-list { margin-top: 2.2mm; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8mm; break-inside: avoid; }
+  .skills { margin-top: 2.2mm; display: block; columns: 2; column-gap: 8mm; }
+  .skills > div { margin-bottom: 3mm; }
+  h2 { margin-top: 4.4mm; }
 
   @media print {
     html { background: #fff; }
@@ -84,31 +126,28 @@
 <div class="sheet">
 
   <header>
-    <h1>AHMAD <span class="sur">Touqeer</span></h1>
-    <p class="role">AI Engineer</p>
-    <div class="contact">
-      <span><a class="link" href="mailto:ahmadtouqeer1995@gmail.com">ahmadtouqeer1995@gmail.com</a></span>
-      <span class="sep">·</span>
-      <span>+33 6 51 96 47 71</span>
-      <span class="sep">·</span>
-      <span>Paris, France</span>
-      <span class="sep">·</span>
-      <span>French</span>
+    <div class="top">
+      <div>
+        <h1>Ahmad <span class="sur">Touqeer</span></h1>
+        <p class="role">Freelance AI Engineer</p>
+      </div>
+      <div class="contact">
+        <a href="mailto:ahmadtouqeer1995@gmail.com">ahmadtouqeer1995@gmail.com</a>
+        <span>+33 6 51 96 47 71</span>
+        <span>Paris, France · French national</span>
+      </div>
     </div>
-    <div class="contact">
-      <span><b>Portfolio:</b>
-        <a class="link" href="https://ahmadtouqeer1995-droid.github.io/portfolio/">ahmadtouqeer1995-droid.github.io/portfolio</a>
-      </span>
-      <span class="sep">·</span>
-      <span><b>LinkedIn:</b>
-        <a class="link" href="https://www.linkedin.com/in/touqeer-ahmad-a788353a2">linkedin.com/in/touqeer-ahmad-a788353a2</a>
-      </span>
+    <div class="links">
+      <span><span class="k">Portfolio</span><a href="https://tokiledev.github.io/portfolio/">tokiledev.github.io/portfolio</a></span>
+      <span><span class="k">LinkedIn</span><a href="https://www.linkedin.com/in/touqeer-ahmad-a788353a2">linkedin.com/in/touqeer-ahmad-a788353a2</a></span>
     </div>
   </header>
 
   <h2>Summary</h2>
   <p class="summary">
-    AI Engineer specializing in agentic AI, generative AI, RAG, and LLM applications. Experienced in
+    Freelance AI Engineer specializing in agentic AI, generative AI, RAG, and LLM applications, with
+    production AI delivered on client engagements for Allianz France, Havas Group, KHOME and Sopra
+    Steria, and 10 web apps of my own live in production. Experienced in
     designing SaaS platforms, Windows applications, AI-powered websites, AI agents, multi-agent
     workflows, prompt engineering, model fine-tuning, computer vision, and scalable AI solutions.
     Strong foundation in machine learning and deep learning, with hands-on experience building RAG
@@ -118,6 +157,17 @@
 
   <h2>Professional Experience</h2>
   <div id="experience"></div>
+
+  <!-- Mirrors the Projects section of the portfolio (src/data/projects.ts, web-apps.ts) -->
+  <h2>Selected Projects</h2>
+  <div class="entry">
+    <ul>
+      <li><b>AI agents:</b> AXIOM, an offline voice agent (local STT, RAG, Ollama LLM, TTS) answering in 0.4–1.2 s on a laptop GPU; a UGC ad pipeline where Claude directs Higgsfield video models.</li>
+      <li><b>Automations (n8n + LLMs):</b> AI lead qualification and CRM routing (HubSpot, Airtable, Telegram alerts), and LinkedIn and email outreach.</li>
+      <li><b>10 live web apps:</b> reseller platforms (<span class="link">xsmmpanel.uk</span> + 3 brands; Next.js, Supabase, Stripe/Revolut, Claude support agent), a five-storefront e-commerce engine on Cloudflare, and dating platforms <span class="link">gloveri.com</span> and <span class="link">apoile.org</span>.</li>
+      <li><b>10 Shopify stores</b>, plus case studies and videos of everything at <a class="link" href="https://tokiledev.github.io/portfolio/projects">tokiledev.github.io/portfolio/projects</a></li>
+    </ul>
+  </div>
 
   <h2>Education</h2>
   <div id="education"></div>
@@ -158,13 +208,16 @@
         <li><b>Responsible AI:</b> Data confidentiality, GDPR awareness, access control, validating AI-generated outputs.</li>
       </ul>
     </div>
+    <div>
+      <h3>Languages</h3>
+      <p class="inline-list" style="margin-top:0">English · French · Urdu · Hindi</p>
+    </div>
+    <div>
+      <h3>Interests</h3>
+      <p class="inline-list" style="margin-top:0">Video games, learning new technology.</p>
+    </div>
   </div>
 
-  <h2>Languages</h2>
-  <p class="inline-list">English · French · Urdu · Hindi</p>
-
-  <h2>Interests</h2>
-  <p class="inline-list">Video games, learning new technology.</p>
 
 </div>
 
@@ -190,15 +243,15 @@
       ],
     },
     {
-      title: 'AI Engineer',
+      title: 'AI Engineer (Freelance)',
       org: 'Sopra Steria',
       location: 'Toulouse, France',
       start: '2026-08',
-      end: null,
+      end: '2026-09',
       bullets: [
-        'Prototype agentic and RAG architectures using <b>LangGraph, LangChain and Google ADK</b>, connecting models to knowledge sources and executable tools.',
-        'Integrate generative AI into web and mobile applications, experimenting with memory, retrieval, reasoning and actions.',
-        'Evaluate prototype reliability and explore AI-assisted development workflows for code generation, testing, reviews and documentation.',
+        'Prototyped agentic and RAG architectures using <b>LangGraph, LangChain and Google ADK</b>, connecting models to knowledge sources and executable tools.',
+        'Integrated generative AI into web and mobile applications, experimenting with memory, retrieval, reasoning and actions.',
+        'Evaluated prototype reliability and explored AI-assisted development workflows for code generation, testing, reviews and documentation.',
       ],
     },
     {
@@ -208,33 +261,33 @@
       start: '2026-01',
       end: '2026-07',
       bullets: [
-        'Integrate LLMs, generative AI and retrieval capabilities into digital-product features.',
-        'Design RAG pipelines for property-related and regulatory documents.',
-        'Apply structured prompting, function calling and agent orchestration using frameworks such as <b>LangGraph and CrewAI</b>.',
+        'Integrated LLMs, generative AI and retrieval capabilities into digital-product features.',
+        'Designed RAG pipelines for property-related and regulatory documents.',
+        'Applied structured prompting, function calling and agent orchestration using frameworks such as <b>LangGraph and CrewAI</b>.',
       ],
     },
     {
-      title: 'AI & Automation Engineer',
+      title: 'AI & Automation Engineer (Freelance)',
       org: 'Havas Group',
       location: 'Paris, France',
       start: '2025-02',
       end: '2025-11',
       bullets: [
-        'Develop and bring generative AI and agentic solutions into production for business use cases.',
-        'Build AI agents that interact with enterprise applications, document repositories, APIs and automated workflows.',
-        'Connect AI capabilities to existing information systems to automate operational processes.',
+        'Developed and brought generative AI and agentic solutions into production for business use cases.',
+        'Built AI agents that interact with enterprise applications, document repositories, APIs and automated workflows.',
+        'Connected AI capabilities to existing information systems to automate operational processes.',
       ],
     },
     {
-      title: 'Data, Automatisation et Intelligence Artificielle',
+      title: 'Data, Automation &amp; Artificial Intelligence (Freelance)',
       org: 'Allianz France',
       location: 'Paris, France',
       start: '2024-01',
       end: '2025-01',
       bullets: [
-        'Design and test automation, generative AI and agentic AI solutions to simplify business processes.',
-        'Build prototypes involving specialised agents, business assistants and orchestrated workflows connecting multiple data sources.',
-        'Automate data collection, analysis, reporting and documentation; measure improvements in efficiency and reliability.',
+        'Designed and tested automation, generative AI and agentic AI solutions to simplify business processes.',
+        'Built prototypes involving specialised agents, business assistants and orchestrated workflows connecting multiple data sources.',
+        'Automated data collection, analysis, reporting and documentation; measured the gains in efficiency and reliability.',
       ],
     },
   ];
