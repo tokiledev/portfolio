@@ -1,180 +1,216 @@
 @import 'tailwindcss';
 
-/* Handwriting for the post-it notes (loaded in index.html):
-   font-scrawl = titles, font-hand = paragraphs */
+/* ===========================================================================
+ * Brand kit: the Cursor look, dark — copied rule for rule from the Social
+ * Fame site (Smm/app/globals.css, html[data-look="cursor"]): Geist for
+ * everything, Geist Mono for every digit, near-black ground, hairlines, 4px
+ * corners for what holds content, pills for what you press, one accent, no
+ * gradient text, no glows. The accent is the orange of the Social Fame ads
+ * and the CV (#f54e00).
+ * Components built on it live in src/components/brand.tsx.
+ * =========================================================================== */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/geist-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/geist-latin-ext.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0100-02BA;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./assets/fonts/geist-mono.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @theme {
-  --font-scrawl: 'Caveat', 'Segoe Print', cursive;
-  --font-hand: 'Kalam', 'Segoe Print', cursive;
+  --font-sans: 'Geist', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --color-canvas: #14120b;
+  --color-surface: #1b1913;
+  --color-void: #100e08;
+  --color-raised: #211f19;
+  --color-hover: #26241e;
+  --color-hairline: #2b2923; /* text at ~10% */
+  --color-hairline-bright: #6f6c64; /* input edges */
+  --color-ink: #edecec;
+  --color-ink-dim: #a19f9b; /* text at ~65% */
+  --color-ink-faint: #85837e; /* text at ~52% */
+  --color-signal: #f54e00;
+  --color-good: #4ade80;
 }
 
 html,
 body {
   height: 100%;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  color-scheme: dark;
 }
 
-/* Animated glow beam that travels around the dock border */
-@property --dock-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+body {
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.dock-glow {
-  border-radius: inherit;
-  padding: 4px;
-  background: conic-gradient(
-    from var(--dock-angle),
-    transparent 0deg,
-    #34d399 45deg,
-    #22d3ee 90deg,
-    #a855f7 135deg,
-    #ec4899 170deg,
-    transparent 220deg
-  );
-  /* Only show the border band, not the panel interior */
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: dock-glow-spin 6s linear infinite;
-}
+/* --- type: Geist, weight 400 headings, tight tracking ---------------------- */
 
-.dock-glow-halo {
-  padding: 6px;
-  filter: blur(10px);
-  opacity: 0.9;
-}
-
-@keyframes dock-glow-spin {
-  to {
-    --dock-angle: 360deg;
-  }
-}
-
-/* ---- Animated tab bar (tab_bar.md) — glass variant, black icons ---- */
-.menu {
-  --duration: 0.7s;
-  margin: 0;
-  display: flex;
-  width: 28em;
-  font-size: 12px;
-  padding: 0 2.85em;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999em;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.45);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.menu__item {
-  all: unset;
-  flex-grow: 1;
-  z-index: 100;
-  display: flex;
-  cursor: pointer;
-  position: relative;
-  border-radius: 50%;
-  align-items: center;
-  will-change: transform;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.15em;
-  padding: 0.55em 0 0.6em;
-  transition: transform var(--timeOut, var(--duration));
-}
-
-.menu__label {
-  font-size: 0.75em;
+:is(.font-bold, .font-extrabold, .font-black) {
   font-weight: 600;
-  color: #404040;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  user-select: none;
 }
 
-.menu__item::before {
-  content: '';
-  z-index: -1;
-  width: 4.2em;
-  height: 4.2em;
-  border-radius: 50%;
-  position: absolute;
-  transform: scale(0);
+:is(h1, h2),
+:is(h1, h2):is(.font-semibold, .font-bold, .font-extrabold, .font-black) {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h3,
+h3:is(.font-semibold, .font-bold, .font-extrabold, .font-black) {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* Every digit in mono, tabular */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-weight: 400;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+/* Section label: small, quiet, no rule. */
+.eyebrow {
+  color: var(--color-ink-dim);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* --- buttons: pills, no gradient, no glow ---------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  padding: 0.7rem 1.35rem;
+  min-height: 44px;
+  cursor: pointer;
   transition:
-    background-color var(--duration),
-    transform var(--duration);
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
+}
+.btn svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
-.menu__item.active {
-  transform: translate3d(0, -0.8em, 0);
+/* Primary: the text colour as fill, ground-coloured text */
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  border-color: transparent;
+}
+.btn-primary:hover {
+  opacity: 0.88;
 }
 
-.menu__item.active::before {
-  transform: scale(1);
-  background-color: var(--bgColorItem);
+/* Cursor's secondary pill: a raised fill, no outline. */
+.btn-ghost {
+  background: var(--color-hover);
+  border-color: transparent;
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  background: var(--color-hairline);
 }
 
-.menu .icon {
-  width: 2.6em;
-  height: 2.6em;
-  stroke: #000000;
-  color: #000000;
-  fill: transparent;
-  stroke-width: 1pt;
-  stroke-miterlimit: 10;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 400;
+/* Header-sized pill, as on cursor.com's nav. */
+.btn-xs {
+  font-size: 14px;
+  padding: 0.35rem 0.75rem;
+  min-height: 30px;
 }
 
-.menu__item.active .icon {
-  animation: strok 1.5s reverse;
+/* An outlined pill (cursor.com's "Contact sales"). */
+.btn-outline {
+  border: 1px solid var(--color-hairline-bright);
+  background: transparent;
+  color: var(--color-ink);
+  font-size: 14px;
+  padding: 0.35rem 0.75rem;
+  min-height: 30px;
+}
+.btn-outline:hover {
+  background: var(--color-hover);
 }
 
-@keyframes strok {
-  100% {
-    stroke-dashoffset: 400;
-  }
+/* The orange "Learn more →" link. */
+.link-accent {
+  color: var(--color-signal);
+  transition: opacity 0.15s;
+}
+.link-accent:hover {
+  opacity: 0.8;
 }
 
-.menu__border {
-  left: 0;
-  bottom: 99%;
-  width: 10.9em;
-  height: 2.4em;
-  position: absolute;
-  clip-path: url(#menu-clip-path);
-  will-change: transform;
-  background-color: rgba(255, 255, 255, 0.45);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  transition: transform var(--timeOut, var(--duration));
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  font-size: 14px;
+  font-weight: 400;
+  min-height: 36px;
+  border-radius: 9999px;
+  color: var(--color-ink-dim);
+  transition: color 0.15s;
+}
+.nav-link:hover {
+  color: var(--color-ink);
 }
 
-.svg-container {
-  width: 0;
-  height: 0;
+/* --- surfaces -------------------------------------------------------------- */
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 4px;
 }
 
-/* Mobile: shrink the tab bar so it fits a phone screen */
-@media (max-width: 639px) {
-  .menu {
-    width: 26em;
-    max-width: calc(100vw - 24px);
-    font-size: 10px;
-    padding: 0 1.6em;
-  }
+/* Brand logos flattened to one ink colour, as on cursor.com's logo strip. */
+.logo-mono {
+  filter: brightness(0) invert(0.93);
 }
-
-/* The skills orbit is scaled in Skills.tsx (useOrbitScale) — it has to fit a
-   200px gutter top and bottom, which CSS alone can't express. */

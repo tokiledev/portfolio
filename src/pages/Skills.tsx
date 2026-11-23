@@ -1,25 +1,13 @@
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-
-import FluidCursor from '@/components/FluidCursor';
-import { ToolDock, ToolDockTile, type ToolDockItem } from '@/components/ui/techstack';
+import { LogoTile, Page, Section, type TechLogo } from '@/components/brand';
 import { useLang, usePageMeta, type Lang } from '@/i18n';
 
-// Skills page: one Techstack dock per category, same component as the home
-// page's bottom row. Logos come from cdn.simpleicons.org by slug; pass a full
-// URL (or a /public path via BASE_URL) for anything simple-icons lacks.
+// Skills, in the Cursor look: one section per category, each a grid of
+// logo tiles (logos flattened to ink, the tool's name underneath). Logos
+// come from cdn.simpleicons.org by slug; pass a full URL (or a /public path
+// via BASE_URL) for anything simple-icons lacks.
 
-/** A brand logo on a white app-icon tile. */
-function logo(label: string, src: string, fit = 'size-[58%]'): ToolDockItem {
-  const url = src.includes('/') ? src : `https://cdn.simpleicons.org/${src}`;
-  return {
-    label,
-    icon: (
-      <ToolDockTile>
-        <img src={url} alt='' draggable={false} className={`${fit} object-contain`} />
-      </ToolDockTile>
-    ),
-  };
+function logo(label: string, src: string): TechLogo {
+  return { label, src };
 }
 
 type CategoryId =
@@ -32,16 +20,15 @@ type CategoryId =
   | 'database'
   | 'cloud';
 
-const CATEGORIES: { id: CategoryId; items: ToolDockItem[] }[] = [
+const CATEGORIES: { id: CategoryId; items: TechLogo[] }[] = [
   {
     id: 'ai',
     items: [
-      logo('LangChain', 'langchain', 'size-[66%]'),
-      // official mark is #7FC8FF — too light on white, so use LangChain's dark brand color
-      logo('LangGraph', 'https://cdn.simpleicons.org/langgraph/1C3C3C', 'size-[66%]'),
+      logo('LangChain', 'langchain'),
+      logo('LangGraph', 'https://cdn.simpleicons.org/langgraph/1C3C3C'),
       logo('CrewAI', 'crewai'),
       logo('MCP', 'modelcontextprotocol'),
-      logo('Hugging Face', 'huggingface', 'size-[68%]'),
+      logo('Hugging Face', 'huggingface'),
       logo('Claude Code', 'claude'),
       logo('OpenAI', 'https://cdn.jsdelivr.net/npm/simple-icons@11/icons/openai.svg'),
       logo('Gemini', 'googlegemini'),
@@ -50,7 +37,7 @@ const CATEGORIES: { id: CategoryId; items: ToolDockItem[] }[] = [
   {
     id: 'automation',
     items: [
-      logo('n8n', 'n8n', 'size-[64%]'),
+      logo('n8n', 'n8n'),
       logo('Make', 'make'),
       logo('Zapier', 'zapier'),
       // no simple-icons entry — served from /public (BASE_URL covers the /portfolio/ prefix)
@@ -61,7 +48,7 @@ const CATEGORIES: { id: CategoryId; items: ToolDockItem[] }[] = [
   {
     id: 'languages',
     items: [
-      logo('Python', 'python', 'size-[64%]'),
+      logo('Python', 'python'),
       logo('TypeScript', 'typescript'),
       logo('JavaScript', 'javascript'),
     ],
@@ -102,18 +89,14 @@ const CATEGORIES: { id: CategoryId; items: ToolDockItem[] }[] = [
   {
     id: 'cloud',
     items: [
-      logo('Docker', 'docker', 'size-[64%]'),
+      logo('Docker', 'docker'),
       logo('Git', 'git'),
       logo('GitHub', 'github'),
-      logo(
-        'AWS',
-        'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg',
-        'size-[70%]'
-      ),
-      logo('Azure', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg'),
+      logo('AWS', 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/amazonwebservices/amazonwebservices-original-wordmark.svg'),
+      logo('Azure', 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/azure/azure-original.svg'),
       logo('Google Cloud', 'googlecloud'),
-      logo('Vercel', 'vercel', 'size-[50%]'),
-      logo('Cloudflare', 'cloudflare', 'size-[66%]'),
+      logo('Vercel', 'vercel'),
+      logo('Cloudflare', 'cloudflare'),
     ],
   },
 ];
@@ -171,8 +154,7 @@ const HEADINGS: Record<Lang, Record<CategoryId, string>> = {
   },
 };
 
-// Grid order: the two 8-logo groups first (half width each), then the rest
-// three to a row.
+// Section order, top to bottom.
 const ORDER: CategoryId[] = [
   'ai',
   'cloud',
@@ -193,43 +175,31 @@ function Skills() {
   );
 
   return (
-    <div className='relative h-full w-full bg-white'>
-      {/* Reactive fluid background — cool mix (blues / purples / magenta) */}
-      <FluidCursor hues={[0.55, 0.62, 0.7, 0.78, 0.85]} />
-
-      {/* Back to home */}
-      <Link
-        to='/'
-        className='fixed top-6 left-6 z-50 flex items-center gap-2 rounded-full border border-white/50 bg-white/40 px-4 py-2 text-sm font-medium text-neutral-800 shadow-sm backdrop-blur-md transition-colors hover:bg-white/70'
-      >
-        <ArrowLeft className='h-4 w-4' />
-        {t('home')}
-      </Link>
-
-      {/* One screen on desktop: 3 rows of docks, no cards. Phones scroll. */}
-      <div className='absolute inset-0 z-10 overflow-y-auto md:overflow-hidden'>
-        <div className='mx-auto flex min-h-full w-full max-w-[1200px] flex-col justify-center px-4 pt-20 pb-6'>
-          <h1 className='text-center text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl'>
-            {t('skillsTitle')}
-          </h1>
-
-          {/* 6-column grid: the two 8-logo groups share row 1, the rest pair up 3 per row */}
-          <div className='mt-2 grid grid-cols-1 gap-x-8 md:grid-cols-6'>
-            {CATEGORIES.map((category) => (
-              <section
-                key={category.id}
-                className={category.items.length > 5 ? 'md:col-span-3' : 'md:col-span-2'}
-              >
-                <ToolDock items={category.items} size={56} label={HEADINGS[lang][category.id]} />
-                <h2 className='mt-2 text-center font-mono text-xs tracking-widest text-neutral-500 uppercase'>
-                  {HEADINGS[lang][category.id]}
-                </h2>
-              </section>
-            ))}
-          </div>
+    <Page>
+      <Section className='pt-16 sm:pt-24'>
+        <div className='max-w-[720px]'>
+          <p className='eyebrow'>{t('heroEyebrow')}</p>
+          <h1 className='mt-4 text-[32px] leading-[1.15] sm:text-[44px]'>{t('skillsTitle')}</h1>
+          <p className='mt-5 max-w-[58ch] text-[18px] leading-[1.45] text-ink-dim'>{t('skillsIntro')}</p>
         </div>
-      </div>
-    </div>
+      </Section>
+
+      <Section className='space-y-14 pt-16'>
+        {CATEGORIES.map((category) => (
+          <div key={category.id}>
+            <div className='flex items-baseline justify-between gap-4'>
+              <h2 className='text-[22px] text-ink'>{HEADINGS[lang][category.id]}</h2>
+              <span className='num text-[13px] text-ink-faint'>{String(category.items.length).padStart(2, '0')}</span>
+            </div>
+            <ul className='mt-5 grid grid-cols-3 gap-1.5 sm:grid-cols-4 lg:grid-cols-8'>
+              {category.items.map((item) => (
+                <LogoTile key={item.label} {...item} />
+              ))}
+            </ul>
+          </div>
+        ))}
+      </Section>
+    </Page>
   );
 }
 

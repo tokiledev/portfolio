@@ -11,7 +11,7 @@ import Skills from '@/pages/Skills';
 
 function App() {
   return (
-    <div className='relative h-screen w-screen overflow-hidden bg-white'>
+    <div className='relative h-screen w-screen overflow-hidden bg-canvas text-ink'>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/me' element={<Me />} />

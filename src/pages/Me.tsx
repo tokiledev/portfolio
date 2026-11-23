@@ -1,23 +1,18 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Bot, Boxes, GraduationCap, Library, Mail, Workflow } from 'lucide-react';
 
-import { InteractiveCanvas } from '@/components/ui/interactive-canvas';
-import { neoButtonClasses } from '@/components/ui/neo-button';
-import { StickyNote } from '@/components/ui/sticky-note';
-import { TapedImage } from '@/components/ui/taped-image';
+import { Block, Page, Section, SectionTitle } from '@/components/brand';
 import { useExperience } from '@/data/experience';
 import { useLang, usePageMeta, type StringKey } from '@/i18n';
 
-// About page ("Me" tab), pinboard style like the project pages — no panels:
-// on the dotted board, a taped photo card and post-its for the intro, stats,
-// what I do and my journey, and a taped index card per role. Everything is
-// stuck on a little crooked, in handwriting. Scrollable, fully translated.
+// About, in the Cursor look: a left-aligned intro beside the photo, the stat
+// blocks, what I do as numbered blocks, the work history as one block per
+// role, and the journey.
 
-const PILLARS: { icon: typeof Bot; titleKey: StringKey; textKey: StringKey }[] = [
-  { icon: Bot, titleKey: 'meShopTitle', textKey: 'meShopText' },
-  { icon: Library, titleKey: 'meWebTitle', textKey: 'meWebText' },
-  { icon: Workflow, titleKey: 'meAiTitle', textKey: 'meAiText' },
-  { icon: Boxes, titleKey: 'meContentTitle', textKey: 'meContentText' },
+const PILLARS: { titleKey: StringKey; textKey: StringKey }[] = [
+  { titleKey: 'meShopTitle', textKey: 'meShopText' },
+  { titleKey: 'meWebTitle', textKey: 'meWebText' },
+  { titleKey: 'meAiTitle', textKey: 'meAiText' },
+  { titleKey: 'meContentTitle', textKey: 'meContentText' },
 ];
 
 const STATS: { value: string; labelKey: StringKey }[] = [
@@ -26,23 +21,6 @@ const STATS: { value: string; labelKey: StringKey }[] = [
   { value: '100+', labelKey: 'meStatsProjects' },
   { value: '1,000+', labelKey: 'meStatsThemes' },
 ];
-
-/** Post-it colors and crooked placements, cycled through so nothing lines up. */
-const PAPERS = ['#fff3a3', '#ffd6e0', '#d4ecff', '#dcf5c9', '#ffe3c2', '#e8dcff'];
-const TILTS = [-2.6, 2.2, -1.6, 3, -2.2, 1.8];
-const SHIFTS = [8, -12, 14, -6, 10, -14];
-
-/** A handwritten heading written straight on the board. */
-function BoardHeading({ children, tilt = -1.5 }: { children: React.ReactNode; tilt?: number }) {
-  return (
-    <h2
-      className='font-scrawl text-5xl leading-none font-bold text-neutral-900 md:text-6xl'
-      style={{ transform: `rotate(${tilt}deg)` }}
-    >
-      {children}
-    </h2>
-  );
-}
 
 function Me() {
   const { t } = useLang();
@@ -53,135 +31,85 @@ function Me() {
   );
 
   return (
-    <div className='relative h-full w-full bg-white'>
-      <InteractiveCanvas />
-
-      {/* Back to home */}
-      <Link
-        to='/'
-        className='fixed top-6 left-6 z-50 flex items-center gap-2 rounded-full border border-white/50 bg-white/60 px-4 py-2 text-sm font-medium text-neutral-800 shadow-sm backdrop-blur-md transition-colors hover:bg-white/80'
-      >
-        <ArrowLeft className='h-4 w-4' />
-        {t('home')}
-      </Link>
-
-      {/* Full-viewport scroller above the board; overflow-x hidden because
-          tilted corners poke past narrow screens */}
-      <div className='absolute inset-0 z-10 overflow-x-hidden overflow-y-auto'>
-        <div className='mx-auto flex w-full max-w-[1100px] flex-col gap-24 px-6 pt-28 pb-28'>
-          {/* Intro: taped photo card + the big post-it */}
-          <section className='flex flex-col items-center gap-14 md:flex-row md:items-start md:gap-12'>
-            <TapedImage tilt={-4} shift={-4} className='shrink-0'>
-              <div className='w-52 p-2.5 pb-3'>
-                <img
-                  src={`${import.meta.env.BASE_URL}ahmad-touqeer.jpg`}
-                  alt='Ahmad Touqeer'
-                  width={800}
-                  height={800}
-                  className='aspect-square w-full object-cover'
-                />
-                <span className='mt-2 block text-center font-scrawl text-2xl leading-none font-bold text-neutral-700'>
-                  {t('meLabel')}
-                </span>
-              </div>
-            </TapedImage>
-
-            <StickyNote paper={PAPERS[0]} tilt={1.6} shift={6} className='w-full' paperClassName='px-7 pt-8 pb-9 md:px-10'>
-              <h1 className='font-scrawl text-6xl leading-[0.9] font-bold break-words text-neutral-900 md:text-7xl'>
-                Ahmad <span className='text-neutral-600'>Touqeer</span>
-              </h1>
-              <p className='mt-2 font-hand text-sm tracking-wider text-neutral-600 uppercase'>{t('meRole')}</p>
-              <p className='mt-5 font-hand text-base leading-relaxed text-neutral-800'>{t('meIntro')}</p>
-              <div className='mt-7 flex flex-wrap items-center gap-4'>
-                <Link to='/projects' className={neoButtonClasses()}>
-                  {t('meViewProjects')}
-                </Link>
-                <Link to='/contact' className={neoButtonClasses({ variant: 'neutral' })}>
-                  <Mail />
-                  {t('contactLabel')}
-                </Link>
-              </div>
-            </StickyNote>
-          </section>
-
-          {/* Stats: four small post-its */}
-          <section className='grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-10'>
-            {STATS.map((stat, i) => (
-              <StickyNote
-                key={stat.labelKey}
-                paper={PAPERS[(i + 1) % PAPERS.length]}
-                tilt={TILTS[(i + 1) % TILTS.length]}
-                paperClassName='px-4 py-6 text-center'
-              >
-                <p className='font-scrawl text-5xl leading-none font-bold text-neutral-900'>{stat.value}</p>
-                <p className='mt-2 font-hand text-sm leading-snug text-neutral-700'>{t(stat.labelKey)}</p>
-              </StickyNote>
-            ))}
-          </section>
-
-          {/* What I do: a heading on the board + four post-its */}
-          <section>
-            <BoardHeading>{t('meWhatIDo')}</BoardHeading>
-            <div className='mt-14 grid grid-cols-1 gap-x-12 gap-y-14 md:grid-cols-2'>
-              {PILLARS.map((pillar, i) => {
-                const Icon = pillar.icon;
-                return (
-                  <StickyNote
-                    key={pillar.titleKey}
-                    paper={PAPERS[(i + 2) % PAPERS.length]}
-                    tilt={TILTS[(i + 2) % TILTS.length]}
-                    shift={SHIFTS[i % SHIFTS.length]}
-                  >
-                    <Icon className='h-7 w-7 text-neutral-800' />
-                    <h3 className='mt-3 font-scrawl text-3xl leading-none font-bold text-neutral-900'>{t(pillar.titleKey)}</h3>
-                    <p className='mt-3 font-hand text-[15px] leading-relaxed text-neutral-800'>{t(pillar.textKey)}</p>
-                  </StickyNote>
-                );
-              })}
+    <Page>
+      {/* intro */}
+      <Section className='pt-16 sm:pt-24'>
+        <div className='grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_320px]'>
+          <div className='max-w-[720px]'>
+            <p className='eyebrow'>{t('meRole')}</p>
+            <h1 className='mt-4 text-[32px] leading-[1.15] sm:text-[44px]'>Ahmad Touqeer</h1>
+            <p className='mt-5 max-w-[62ch] text-[18px] leading-[1.55] text-ink-dim'>{t('meIntro')}</p>
+            <div className='mt-8 flex flex-wrap gap-3'>
+              <Link to='/projects' className='btn btn-primary'>
+                {t('meViewProjects')}
+              </Link>
+              <Link to='/contact' className='btn btn-ghost'>
+                {t('contactLabel')}
+              </Link>
             </div>
-          </section>
-
-          {/* Work history — one taped index card per role, newest first */}
-          <section>
-            <BoardHeading tilt={1.2}>{t('meTimelineTitle')}</BoardHeading>
-            <ol className='mt-16 flex flex-col gap-16'>
-              {experience.map((entry, i) => (
-                <li key={entry.id} className={i % 2 ? 'md:ml-16' : 'md:mr-16'}>
-                  <TapedImage tilt={TILTS[i % TILTS.length] * 0.6} shift={SHIFTS[i % SHIFTS.length]}>
-                    <div className='px-6 pt-8 pb-6 md:px-8'>
-                      <div className='flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6'>
-                        <h3 className='font-scrawl text-3xl leading-none font-bold text-neutral-900'>
-                          {entry.title}
-                          <span className='font-hand text-lg font-normal text-neutral-500'> · {entry.org}</span>
-                        </h3>
-                        <p className='shrink-0 font-hand text-sm whitespace-nowrap text-neutral-500'>{entry.period}</p>
-                      </div>
-                      <p className='mt-2 flex items-center gap-1.5 font-hand text-sm text-neutral-500'>
-                        {entry.kind === 'education' ? (
-                          <GraduationCap className='h-3.5 w-3.5' />
-                        ) : (
-                          <Boxes className='h-3.5 w-3.5' />
-                        )}
-                        {entry.location}
-                      </p>
-                      <p className='mt-3 font-hand text-[15px] leading-relaxed text-neutral-800'>{entry.description}</p>
-                    </div>
-                  </TapedImage>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          {/* Journey: one long post-it */}
-          <section>
-            <BoardHeading>{t('meJourneyTitle')}</BoardHeading>
-            <StickyNote paper={PAPERS[5]} tilt={-1.2} shift={10} className='mt-12' paperClassName='px-7 pt-8 pb-9 md:px-10'>
-              <p className='font-hand text-base leading-relaxed text-neutral-800'>{t('meJourneyText')}</p>
-            </StickyNote>
-          </section>
+          </div>
+          <img
+            src={`${import.meta.env.BASE_URL}ahmad-touqeer.jpg`}
+            alt='Ahmad Touqeer'
+            width={800}
+            height={800}
+            className='aspect-square w-full max-w-[320px] rounded-[4px] object-cover'
+          />
         </div>
-      </div>
-    </div>
+      </Section>
+
+      {/* stats */}
+      <Section className='pt-20'>
+        <div className='grid gap-1.5 sm:grid-cols-2 lg:grid-cols-4'>
+          {STATS.map((s) => (
+            <Block key={s.labelKey}>
+              <p className='num text-[32px] leading-none text-ink'>{s.value}</p>
+              <p className='mt-2 text-[14px] text-ink-dim'>{t(s.labelKey)}</p>
+            </Block>
+          ))}
+        </div>
+      </Section>
+
+      {/* what I do */}
+      <Section className='pt-24'>
+        <SectionTitle title={t('meWhatIDo')} />
+        <ol className='mt-10 grid gap-1.5 sm:grid-cols-2'>
+          {PILLARS.map((p, i) => (
+            <li key={p.titleKey} className='rounded-[4px] bg-surface p-6'>
+              <span className='num text-[14px] text-signal'>{String(i + 1).padStart(2, '0')}</span>
+              <h3 className='mt-3 text-[18px] text-ink'>{t(p.titleKey)}</h3>
+              <p className='mt-2 text-[15px] leading-[1.6] text-ink-dim'>{t(p.textKey)}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* work history, newest first */}
+      <Section className='pt-24'>
+        <SectionTitle title={t('meTimelineTitle')} />
+        <ol className='mt-10 grid gap-1.5'>
+          {experience.map((entry) => (
+            <li key={entry.id} className='rounded-[4px] bg-surface p-6'>
+              <div className='flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6'>
+                <h3 className='text-[18px] text-ink'>
+                  {entry.title}
+                  <span className='text-ink-faint'> · {entry.org}</span>
+                </h3>
+                <p className='num shrink-0 text-[13px] whitespace-nowrap text-ink-faint'>{entry.period}</p>
+              </div>
+              <p className='mt-1 text-[13px] text-ink-faint'>{entry.location}</p>
+              <p className='mt-3 text-[15px] leading-[1.6] text-ink-dim'>{entry.description}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* journey */}
+      <Section className='pt-24'>
+        <SectionTitle title={t('meJourneyTitle')} />
+        <p className='mt-6 max-w-[72ch] text-[18px] leading-[1.6] text-ink-dim'>{t('meJourneyText')}</p>
+      </Section>
+    </Page>
   );
 }
 

@@ -1,123 +1,183 @@
-import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BriefcaseBusiness, Laugh, Layers, UserRoundSearch } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-import FluidCursor from '@/components/FluidCursor';
-import { AnimatedTabBar } from '@/components/ui/animated-tab-bar';
-import { LanguageSwitcher } from '@/components/ui/language-switcher';
-import { Robot } from '@/components/ui/robot-hero';
-import { ToolDock, type ToolDockItem } from '@/components/ui/techstack';
-import { logo } from '@/data/tech-logos';
+import { AppWindow, Backdrop, Block, Page, Section, SectionTitle } from '@/components/brand';
+import { PROJECT_GROUPS, useProjects, type Project } from '@/data/projects';
 import { useLang, usePageMeta, type StringKey } from '@/i18n';
 
-// Same items, icons and colors as toukoum.fr's quick-question buttons
-const data: { labelKey: StringKey; color: string; icon: typeof Laugh; path: string }[] = [
-  { labelKey: 'meLabel', color: '#329696', icon: Laugh, path: '/me' },
-  { labelKey: 'projectsTitle', color: '#3E9858', icon: BriefcaseBusiness, path: '/projects' },
-  { labelKey: 'skillsTitle', color: '#856ED9', icon: Layers, path: '/skills' },
-  { labelKey: 'navContact', color: '#C19433', icon: UserRoundSearch, path: '/contact' },
+// Home, laid out like the Cursor-look homepage (Smm/app/page.tsx): a short
+// left-aligned statement and two pills, one product picture on the painted
+// backdrop, the "delivered for" tile strip, alternating feature blocks (one
+// per project group), the stat blocks, what I do, and a closing call to action.
+
+const CLIENTS = ['Allianz France', 'Havas Group', 'KHOME', 'Sopra Steria'];
+
+const STATS: { value: string; labelKey: StringKey }[] = [
+  { value: '5+', labelKey: 'meStatsAI' },
+  { value: '4', labelKey: 'meStatsClients' },
+  { value: '100+', labelKey: 'meStatsProjects' },
+  { value: '1,000+', labelKey: 'meStatsThemes' },
 ];
 
-// The headline skills from the Skills page, grouped left to right by layer.
-const stack: ToolDockItem[] = [
-  // AI & agents
-  logo('Claude Code', 'claude'),
-  logo('Hugging Face', 'huggingface', 'size-[72%]'),
-  // official mark is #7FC8FF — too light on white, so use LangChain's dark brand color
-  logo('LangGraph', 'https://cdn.simpleicons.org/langgraph/1C3C3C', 'size-[64%]'),
-  logo('MCP', 'modelcontextprotocol'),
-  // Automation
-  logo('n8n', 'n8n', 'size-[62%]'),
-  logo('Zapier', 'zapier'),
-  // no simple-icons entry — served from /public (BASE_URL covers the /portfolio/ prefix)
-  logo('Lovable', `${window.location.origin}${import.meta.env.BASE_URL}lovable-color.svg`),
-  // Frontend
-  logo('TypeScript', 'typescript'),
-  logo('React', 'react'),
-  logo('Next.js', 'nextdotjs'),
-  // Backend
-  logo('Python', 'python', 'size-[68%]'),
-  logo('FastAPI', 'fastapi'),
-  // Data
-  logo('PostgreSQL', 'postgresql'),
-  logo('Supabase', 'supabase'),
-  // Cloud & DevOps
-  logo('GitHub', 'github', 'size-[68%]'),
-  logo('Docker', 'docker'),
-  logo(
-    'AWS',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg',
-    'size-[76%]'
-  ),
-  logo('Azure', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg'),
-];
+/** The grey sentence under each group's heading. */
+export const GROUP_INTRO: Record<string, StringKey> = {
+  agents: 'projectsIntroVoice',
+  automations: 'projectsIntroLead',
+  websites: 'projectsIntroApps',
+  shopify: 'projectsIntro',
+};
+
+/** A project's first picture in an app window, titled with its name. */
+export function ProjectShot({ project, eager = false }: { project: Project; eager?: boolean }) {
+  return (
+    <AppWindow title={project.title}>
+      <img
+        src={project.image}
+        alt={project.title}
+        loading={eager ? 'eager' : 'lazy'}
+        draggable={false}
+        className={`block aspect-[16/10] w-full select-none ${
+          project.fit === 'contain' ? 'object-contain' : 'object-cover object-top'
+        }`}
+      />
+    </AppWindow>
+  );
+}
 
 function Home() {
-  const navigate = useNavigate();
   const { t } = useLang();
-  const pendingNav = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Top tab bar: navigate AFTER its animation (0.7s) has played — navigating
-  // right away unmounts the tab bar before the bump/color ever move.
-  const handleTabChange = (index: number) => {
-    if (pendingNav.current) clearTimeout(pendingNav.current);
-    pendingNav.current = setTimeout(() => navigate(data[index].path), 800);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (pendingNav.current) clearTimeout(pendingNav.current);
-    };
-  }, []);
+  const projects = useProjects();
 
   usePageMeta(
     'AI Engineer — Agents, Automations & SaaS | Ahmad Touqeer',
     'Freelance AI engineer in Paris. AI agents and agentic workflows with LangChain and LangGraph, automation with n8n, Make and Zapier, SaaS products, CRM automation and AI-powered websites.'
   );
 
+  const groups = PROJECT_GROUPS.map((g) => ({
+    group: g,
+    items: projects.filter((p) => g.kinds.includes(p.kind)),
+  })).filter((g) => g.items.length > 0);
+  // The hero shows a finished website, so it doesn't repeat the first
+  // feature block's picture.
+  const featured =
+    projects.find((p) => p.kind === 'apps') ?? groups[0]?.items[0];
+
   return (
-    <>
-      {/* Page h1 for SEO — visually the page is the watermark + robot */}
-      <h1 className='sr-only'>
-        Ahmad Touqeer — AI Engineer in Paris: agents, automation workflows, SaaS and AI-powered
-        websites
-      </h1>
+    <Page>
+      {/* hero */}
+      <Section className='pt-16 sm:pt-24'>
+        <div className='max-w-[720px]'>
+          <p className='eyebrow'>{t('heroEyebrow')}</p>
+          <h1 className='mt-4'>
+            <span className='block text-[32px] leading-[1.15] sm:text-[44px]'>{t('heroTitle')}</span>
+          </h1>
+          <p className='mt-5 max-w-[58ch] text-[18px] leading-[1.45] text-ink-dim sm:text-[20px]'>{t('heroSub')}</p>
 
-      {/* Name watermark, as in the first version: centred on the bottom edge,
-          partly cut off. z-10: above the fluid canvas (z-0), so the fluid
-          flows behind the name, and below the robot (z-20). */}
-      <div className='pointer-events-none fixed bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-[28%] select-none'>
-        <span className='text-[18vw] leading-none font-extrabold tracking-tight text-neutral-200'>
-          Touqeer
-        </span>
-      </div>
+          <div className='mt-8 flex flex-wrap gap-3'>
+            <Link to='/projects' className='btn btn-primary'>
+              {t('meViewProjects')}
+            </Link>
+            <Link to='/contact' className='btn btn-ghost'>
+              {t('contactLabel')}
+            </Link>
+          </div>
+        </div>
 
-      {/* Reactive fluid background */}
-      <FluidCursor />
+        {featured && (
+          <Link to={`/projects/${featured.id}`} aria-label={featured.title} className='mt-14 block'>
+            <Backdrop>
+              <ProjectShot project={featured} eager />
+            </Backdrop>
+          </Link>
+        )}
+      </Section>
 
-      {/* 3D robot companion — follows the cursor, click it for heart eyes */}
-      <div className='absolute inset-0 z-20'>
-        <Robot />
-      </div>
+      {/* "delivered for" tile strip */}
+      <Section className='pt-20'>
+        <p className='text-center text-[14px] text-ink-dim'>{t('deliveredFor')}</p>
+        <ul className='mt-5 grid grid-cols-2 gap-1.5 lg:grid-cols-4'>
+          {CLIENTS.map((c) => (
+            <li key={c} className='flex h-16 items-center justify-center rounded-[4px] bg-surface text-[15px] text-ink'>
+              {c}
+            </li>
+          ))}
+        </ul>
+      </Section>
 
-      {/* Tech stack — vertical on the left, centred, same gap top and bottom */}
-      <div className='pointer-events-none fixed top-6 bottom-6 left-3 z-30 sm:left-6'>
-        <ToolDock items={stack} size={60} label='Tech stack' orientation='vertical' side='left' />
-      </div>
+      {/* one feature block per project group, picture side alternating */}
+      <Section className='space-y-6 pt-24'>
+        <h2 className='sr-only'>{t('projectsTitle')}</h2>
+        {groups.map(({ group, items }, i) => (
+          <article
+            key={group.slug}
+            className='grid items-center gap-8 rounded-[4px] bg-surface p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]'
+          >
+            <div className={i % 2 === 1 ? 'lg:order-2' : ''}>
+              <p className='num text-[14px] text-signal'>{String(items.length).padStart(2, '0')}</p>
+              <h3 className='mt-3 text-[20px] text-ink'>{t(group.labelKey)}</h3>
+              <p className='mt-1 text-[18px] leading-[1.45] text-ink-dim'>{t(GROUP_INTRO[group.slug])}</p>
+              <Link to={`/projects/${group.slug}`} className='link-accent mt-5 inline-flex text-[15px]'>
+                {t('seeProjects')} →
+              </Link>
+            </div>
+            <Link
+              to={`/projects/${items[0].id}`}
+              aria-label={items[0].title}
+              className={i % 2 === 1 ? 'lg:order-1' : ''}
+            >
+              <Backdrop>
+                <ProjectShot project={items[0]} />
+              </Backdrop>
+            </Link>
+          </article>
+        ))}
+      </Section>
 
-      {/* Glass tab-bar menu + language switcher — top right. Home page only.
-          Stacks vertically on phones so nothing overflows. */}
-      <div className='absolute top-4 right-4 z-50 flex flex-col items-end gap-2 sm:top-6 sm:right-6 sm:flex-row sm:items-start sm:gap-3'>
-        <AnimatedTabBar
-          items={data.map((item) => {
-            const Icon = item.icon;
-            return { icon: <Icon className='icon' />, color: item.color, label: t(item.labelKey) };
-          })}
-          onTabChange={handleTabChange}
-        />
-        <LanguageSwitcher />
-      </div>
-    </>
+      {/* stats */}
+      <Section className='pt-24'>
+        <div className='grid gap-1.5 sm:grid-cols-2 lg:grid-cols-4'>
+          {STATS.map((s) => (
+            <Block key={s.labelKey}>
+              <p className='num text-[32px] leading-none text-ink'>{s.value}</p>
+              <p className='mt-2 text-[14px] text-ink-dim'>{t(s.labelKey)}</p>
+            </Block>
+          ))}
+        </div>
+      </Section>
+
+      {/* what I do */}
+      <Section className='pt-24'>
+        <SectionTitle title={t('meWhatIDo')} />
+        <ol className='mt-10 grid gap-1.5 sm:grid-cols-2'>
+          {(
+            [
+              ['meShopTitle', 'meShopText'],
+              ['meWebTitle', 'meWebText'],
+              ['meAiTitle', 'meAiText'],
+              ['meContentTitle', 'meContentText'],
+            ] as const
+          ).map(([title, text], i) => (
+            <li key={title} className='rounded-[4px] bg-surface p-6'>
+              <span className='num text-[14px] text-signal'>{String(i + 1).padStart(2, '0')}</span>
+              <h3 className='mt-3 text-[18px] text-ink'>{t(title)}</h3>
+              <p className='mt-2 text-[15px] leading-[1.6] text-ink-dim'>{t(text)}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* closing CTA */}
+      <Section className='pt-28 text-center'>
+        <h2 className='text-[32px] sm:text-[44px]'>{t('ctaTitle')}</h2>
+        <div className='mt-6 flex flex-wrap justify-center gap-3'>
+          <Link to='/contact' className='btn btn-primary'>
+            {t('contactLabel')}
+          </Link>
+          <Link to='/projects' className='btn btn-ghost'>
+            {t('meViewProjects')}
+          </Link>
+        </div>
+      </Section>
+    </Page>
   );
 }
 
